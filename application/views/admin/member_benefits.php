@@ -72,7 +72,7 @@
                 <div class="col p-md-0">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
-                        <li class="breadcrumb-item active"><a href="javascript:void(0)">About Us</a></li>
+                        <li class="breadcrumb-item active"><a href="javascript:void(0)">Membership Benefits</a></li>
                     </ol>
                 </div>
             </div>
@@ -83,18 +83,41 @@
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-body">
-                                <form id="AboutUsForm">
-                                    <h4 class="card-title">About Us</h4>
+                                <form id="MemberBenefitsForm">
+                                    <h4 class="card-title">Add Membership Benefits</h4>
                                     <div class="form-validation">
                                         <div class="row">
-                                            <input type="hidden" name="about_us_id" id="about_us_id" value="<?= $about_us['id'] ?>">
-                                            <div class="col-lg-12">
-                                                <label class="col-form-label" for="about_us">About Us <span
+                                            <div class="col-lg-6">
+                                                <label class="col-form-label" for="title_benefits">Title <span
                                                         class="text-danger">*</span></label>
-                                                <textarea name="about_us" id="about_us" class="form-control" rows="20"><?= $about_us['about_us'] ?></textarea>
-                                                <small class="text-danger" id="about_us_error"></small>
+                                                <input type="text" class="form-control" id="title_benefits"
+                                                    name="title_benefits" placeholder="Enter Title" value="<?= $membership_benefits['title_benefits'] ?>">
+                                                    <small id="title_benefits_error" class="text-danger"></small>
+
                                             </div>
-                                            
+                                            <div class="col-lg-12">
+                                                <label class="col-form-label" for="member_benefits">Member Benefits <span
+                                                        class="text-danger">*</span></label>
+                                                <textarea name="member_benefits" id="member_benefits" class="form-control" rows="20"><?= $membership_benefits['benefits'] ?></textarea>
+                                                <small class="text-danger" id="member_benefits_error"></small>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <h3 class="card-title">Activities of the IHDMA</h3>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <label class="col-form-label" for="title_activities">Title <span
+                                                        class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="title_activities"
+                                                    name="title_activities" placeholder="Enter Title" value="<?= $membership_benefits['title_activities'] ?>">
+                                                    <small id="title_activities_error" class="text-danger"></small>
+                                            </div>
+                                            <div class="col-lg-12">
+                                                <label class="col-form-label" for="activities_of_ihdma">Activities of the IHDMA <span
+                                                        class="text-danger">*</span></label>
+                                                <textarea name="activities_of_ihdma" id="activities_of_ihdma" class="form-control" rows="20"><?= $membership_benefits['activities'] ?></textarea>
+                                                <small class="text-danger" id="activities_of_ihdma_error"></small>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="form-group row">
@@ -108,9 +131,12 @@
                         </div>
                     </div>
                 </div>
-            </div>            
+            </div>
+          
         </div>
-        <!-- #/ container -->           
+        <!-- #/ container -->
+        <!-- Modal Popup -->
+        
     </div>
     <!--**********************************
             Content body end
@@ -122,8 +148,8 @@
         ***********************************-->
     <div class="footer">
         <div class="copyright">
-            <p>Copyright &copy; Designed & Developed by <a href="https://themeforest.net/user/quixlab">Quixlab</a>
-                2018</p>
+            <p>Copyright &copy; Designed & Developed by <a href="javascript:void(0);">IHDMA</a>
+                </p>
         </div>
     </div>
     <!--**********************************
@@ -138,7 +164,7 @@
         Scripts
     ***********************************-->
     <?php include('common/js_files.php');?>
-    <script src="<?= base_url()?>assets/view_js/about_us.js"></script>
+    <script src="<?= base_url()?>assets/view_js/member_benefits.js"></script>
 </body>
 
 </html>

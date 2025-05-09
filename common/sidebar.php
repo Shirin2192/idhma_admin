@@ -40,6 +40,7 @@
                             <li><a href="<?= base_url()?>admin/team_member" aria-expanded="false">Team Member</a></li>
                             <li><a href="<?= base_url()?>admin/membership_category" aria-expanded="false">Membership Category</a></li>
                             <li><a href="<?= base_url()?>admin/membership_types" aria-expanded="false">Membership Types</a></li>
+                            <li><a href="<?= base_url()?>admin/membership_benefits" aria-expanded="false">Membership Benefits</a></li>
                         </ul>
                     </li>                  
                  </ul>

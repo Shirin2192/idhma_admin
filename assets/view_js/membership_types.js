@@ -36,7 +36,7 @@ $('#MembershipTypeForm').on('submit', function (e) {
                 });
                 form.reset();
                 $('.chosen-select').val('').trigger("chosen:updated");
-                $('#MembershipTypeTable').DataTable().ajax.reload(null, false);
+                $('#MemberTypeTable').DataTable().ajax.reload(null, false);
             } else if (response.status === 'error') {
                 if (response.errors) {
                     $.each(response.errors, function (key, val) {

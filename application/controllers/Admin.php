@@ -19,7 +19,10 @@ class Admin extends CI_Controller {
 		if (empty($admin_session)) {
 			redirect('common');
 		}else{
-			$this->load->view('admin/dashboard');
+			$response['total_users'] = $this->model->selectWhereData('tbl_users', array('is_delete' => '1'), 'count(id) as total_users', true);
+			$response['total_enquiries'] = $this->model->selectWhereData('tbl_enquiries', array('is_delete' => '1'), 'count(id) as total_enquiries', true);
+			$response['total_team_members'] = $this->model->selectWhereData('tbl_team_members', array('is_delete' => '1'), 'count(id) as total_team_members', true);
+			$this->load->view('admin/dashboard',$response);
 		}
 	}
 	public function blogs()
@@ -406,7 +409,7 @@ class Admin extends CI_Controller {
 		$this->form_validation->set_rules('type_name', 'Type Name', 'required|trim|max_length[100]');
 		$this->form_validation->set_rules('currency', 'Currency', 'required|trim|max_length[10]');
 		$this->form_validation->set_rules('price', 'Price', 'required|numeric');
-		$this->form_validation->set_rules('short_description', 'Short Description', 'required|trim|max_length[255]');
+		$this->form_validation->set_rules('short_description', 'Short Description', 'required|trim');
 		$this->form_validation->set_rules('full_description', 'Full Description', 'required|trim');
 	
 		if ($this->form_validation->run() == FALSE) {
@@ -416,14 +419,12 @@ class Admin extends CI_Controller {
 			]);
 			return;
 		}
-	
 		$category_id = $this->input->post('category_name');
 		$type_name = trim($this->input->post('type_name'));
 	
 		// Check for existing type under same category
-		$exists = $this->model->selectWhereData(
-			'tbl_membership_types',
-			['fk_category_id' => $category_id, 'LOWER(type_name)' => strtolower($type_name)],
+		$exists = $this->model->selectWhereData('tbl_membership_types',
+			[ 'LOWER(type_name)' => strtolower($type_name)],
 			'*',
 			true
 		);
@@ -439,12 +440,11 @@ class Admin extends CI_Controller {
 		$data = [
 			'fk_category_id' => $category_id,
 			'type_name' => $type_name,
-			'currency' => $this->input->post('currency'),
+			'fk_currency_id' => $this->input->post('currency'),
 			'price' => $this->input->post('price'),
 			'short_description' => $this->input->post('short_description'),
 			'full_description' => $this->input->post('full_description'),
 		];
-	
 		$insert = $this->model->insertData('tbl_membership_types', $data);
 	
 		if ($insert) {
@@ -1219,6 +1219,84 @@ class Admin extends CI_Controller {
 			}			
 		}
 	}
+	public function membership_benefits(){
+		$admin_session = $this->session->userdata('admin_session');
+		if (empty($admin_session)) {
+			redirect('common');
+		}else{
+			$response['membership_benefits'] = $this->model->selectWhereData('tbl_member_benefits', array('is_delete' => '1'), '*', false,array('id'=>'desc'));
+			$response['membership_benefits'] = $response['membership_benefits'][0] ?? null; // Get the first record or null if not found	
+			$this->load->view('admin/member_benefits', $response);
+		}
+	}
+	public function save_update_member_benefits() {
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('title_benefits', 'Title', 'required|trim');
+		$this->form_validation->set_rules('member_benefits', 'Member Benefits', 'required|trim');
+		$this->form_validation->set_rules('title_activities', 'Title', 'required|trim');
+		$this->form_validation->set_rules('activities_of_ihdma', 'Activities of IHDMA', 'required|trim');
+	
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Validation failed.',
+				'errors' => $this->form_validation->error_array()
+			]);
+			return;
+		}
+	
+		$title_benefits = trim($this->input->post('title_benefits'));
+		$member_benefits = trim($this->input->post('member_benefits'));
+		$title_activities = trim($this->input->post('title_activities'));
+		$activities_of_ihdma = trim($this->input->post('activities_of_ihdma'));
+	
+		$data = [
+			'title_benefits' => $title_benefits,
+			'benefits' => $member_benefits,
+			'title_activities' => $title_activities,
+			'activities' => $activities_of_ihdma,
+		];
+	
+		// Check if a record already exists with the same benefits & activities (ignoring deleted ones)
+		$where = [
+			'benefits' => $member_benefits,
+			'activities' => $activities_of_ihdma,
+			'is_delete' => '1' // Assuming 1 means active
+		];
+	
+		$existing = $this->model->selectWhereData('tbl_member_benefits', $where, '*', true);
+	
+		if ($existing) {
+			// Update existing record
+			$update = $this->model->updateData('tbl_member_benefits', $data, ['id' => $existing['id']]);
+			if ($update) {
+				echo json_encode([
+					'status' => 'success',
+					'message' => 'Membership benefits updated successfully.'
+				]);
+			} else {
+				echo json_encode([
+					'status' => 'error',
+					'message' => 'Failed to update membership benefits. Please try again.'
+				]);
+			}
+		} else {
+			// Insert new record
+			$insert = $this->model->insertData('tbl_member_benefits', $data);
+			if ($insert) {
+				echo json_encode([
+					'status' => 'success',
+					'message' => 'Membership benefits saved successfully.'
+				]);
+			} else {
+				echo json_encode([
+					'status' => 'error',
+					'message' => 'Failed to save membership benefits. Please try again.'
+				]);
+			}
+		}
+	}
+	
 
 }
 	

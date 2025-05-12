@@ -1,4 +1,51 @@
-$('#CategoryForm').on('submit', function (e) {
+let editDescriptionEditor;
+
+ClassicEditor
+    .create(document.querySelector('#description'), {
+        toolbar: [
+            'heading', '|',
+            'bold', 'italic', 'underline', '|',
+            'fontColor', 'fontBackgroundColor', 'fontSize', '|',
+            'link', 'bulletedList', 'numberedList', '|',
+            'alignment', 'blockQuote', '|',
+            'undo', 'redo'
+        ],
+       
+        fontSize: {
+            options: [ 'tiny', 'small', 'default', 'big', 'huge' ]
+        },
+        alignment: {
+            options: [ 'left', 'center', 'right', 'justify' ]
+        }
+    })
+    .catch(error => {
+        console.error(error);
+    });
+    ClassicEditor
+    .create(document.querySelector('#edit_description'), {
+        toolbar: [
+            'heading', '|',
+            'bold', 'italic', 'underline', '|',
+            'fontColor', 'fontBackgroundColor', 'fontSize', '|',
+            'link', 'bulletedList', 'numberedList', '|',
+            'alignment', 'blockQuote', '|',
+            'undo', 'redo'
+        ],
+       
+        fontSize: {
+            options: [ 'tiny', 'small', 'default', 'big', 'huge' ]
+        },
+        alignment: {
+            options: [ 'left', 'center', 'right', 'justify' ]
+        }
+    })
+   .then(editor => {
+        editDescriptionEditor = editor;
+    })
+    .catch(error => {
+        console.error(error);
+    });
+    $('#CategoryForm').on('submit', function (e) {
     e.preventDefault();
 
     let formData = new FormData(this); // Collect the form data, including the file
@@ -137,7 +184,11 @@ $(document).ready(function () {
         });
     });
     
-
+// Initialize CKEditor
+    if (CKEDITOR.instances['edit_description']) {
+        CKEDITOR.instances['edit_description'].destroy(true);
+    }
+    CKEDITOR.replace('edit_description');
    // Edit button handler
 $('#MemberCategoryTable').on('click', '.edit-btn', function () {
     const id = $(this).data('id'); // Get the blog ID from the button's data-id attribute
@@ -158,7 +209,11 @@ $('#MemberCategoryTable').on('click', '.edit-btn', function () {
                 // Populate modal fields
                 $('#edit_category_id').val(EditCategoryData.id);
                 $('#edit_category_name').val(EditCategoryData.category_name);
-                $('#edit_description').val(EditCategoryData.description);
+                // Wait for CKEditor to be ready, then set data
+                 if (editDescriptionEditor) {
+                    editDescriptionEditor.setData(EditCategoryData.description);
+                }
+
 
                 // Show the modal with the blog details
                 $('#editMembershipCategoryModal').modal('show');

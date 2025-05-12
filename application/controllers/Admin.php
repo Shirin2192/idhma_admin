@@ -321,8 +321,8 @@ class Admin extends CI_Controller {
 		$this->load->library('form_validation');
 	
 		// Validation rules
-		$this->form_validation->set_rules('edit_category_name', 'Category Name', 'required|trim|max_length[100]');
-		$this->form_validation->set_rules('edit_description', 'Description', 'required|trim|max_length[1000]');
+		$this->form_validation->set_rules('edit_category_name', 'Category Name', 'required|trim');
+		$this->form_validation->set_rules('edit_description', 'Description', 'required|trim');
 	
 		if ($this->form_validation->run() == FALSE) {
 			echo json_encode([
@@ -1249,14 +1249,13 @@ class Admin extends CI_Controller {
 		];
 	
 		// Check if a record already exists with the same benefits & activities (ignoring deleted ones)
-		$where = [
-			'benefits' => $member_benefits,
-			'activities' => $activities_of_ihdma,
-			'is_delete' => '1' // Assuming 1 means active
-		];
+		// $where = [
+		// 	'benefits' => $member_benefits,
+		// 	'activities' => $activities_of_ihdma,
+		// 	'is_delete' => '1' // Assuming 1 means active
+		// ];
 	
-		$existing = $this->model->selectWhereData('tbl_member_benefits', $where, '*', true);
-	
+		$existing = $this->model->selectWhereData('tbl_member_benefits',array('is_delete'=>'1') , '*', true);
 		if ($existing) {
 			// Update existing record
 			$update = $this->model->updateData('tbl_member_benefits', $data, ['id' => $existing['id']]);

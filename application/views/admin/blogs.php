@@ -147,7 +147,6 @@
                                                 <th>Content</th>
                                                 <th>Image</th>
                                                 <th>Action</th>
-
                                             </tr>
                                         </thead>
                                     </table>

@@ -92,10 +92,12 @@
                                                         class="text-danger">*</span></label>
                                                 <input type="text" class="form-control" id="category_name"
                                                     name="category_name" placeholder="Enter Category Name">
-                                                    <small id="category_name_error" class="text-danger"></small>
+                                                <small id="category_name_error" class="text-danger"></small>
 
                                             </div>
-                                            <div class="col-lg-6">
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-12">
                                                 <label class="col-form-label" for="description">Description <span
                                                         class="text-danger">*</span></label>
                                                 <textarea type="text" class="form-control" id="description"
@@ -144,8 +146,8 @@
         <!-- #/ container -->
         <!-- Modal Popup -->
         <!-- View Blog Details Modal -->
-        <div class="modal fade" id="viewMemberCategoryModal" tabindex="-1" role="dialog" aria-labelledby="viewMemberCategoryModalLabel"
-            aria-hidden="true">
+        <div class="modal fade" id="viewMemberCategoryModal" tabindex="-1" role="dialog"
+            aria-labelledby="viewMemberCategoryModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -165,7 +167,7 @@
                                 <p id="view_description" class="lead"></p>
                             </div>
                         </div>
-                        
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -173,8 +175,8 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="editMembershipCategoryModal" tabindex="-1" role="dialog" aria-labelledby="editMembershipCategoryModalLabel"
-            aria-hidden="true">
+        <div class="modal fade" id="editMembershipCategoryModal" tabindex="-1" role="dialog"
+            aria-labelledby="editMembershipCategoryModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -191,16 +193,18 @@
                                 <div class="col-lg-6">
                                     <label class="col-form-label" for="edit_category_name">Category Name <span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="edit_category_name" name="edit_category_name"
-                                        placeholder="Enter Category Name">
+                                    <input type="text" class="form-control" id="edit_category_name"
+                                        name="edit_category_name" placeholder="Enter Category Name">
                                     <small class="text-danger" id="edit_category_name_error"></small>
 
                                 </div>
-                                <div class="col-lg-6">
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
                                     <label class="col-form-label" for="edit_description">Description <span
                                             class="text-danger">*</span></label>
-                                    <textarea type="text" class="form-control" id="edit_description" name="edit_description"
-                                        placeholder="Enter Description"></textarea>
+                                    <textarea type="text" class="form-control" id="edit_description"
+                                        name="edit_description" placeholder="Enter Description"></textarea>
                                     <small class="text-danger" id="edit_description_error"></small>
                                 </div>
                             </div>
@@ -218,8 +222,8 @@
             </div>
         </div>
         <!-- Delete Confirmation Modal -->
-        <div class="modal fade" id="deleteCategoryModal" tabindex="-1" role="dialog" aria-labelledby="deleteCategoryModalLabel"
-            aria-hidden="true">
+        <div class="modal fade" id="deleteCategoryModal" tabindex="-1" role="dialog"
+            aria-labelledby="deleteCategoryModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -247,7 +251,7 @@
     <!--**********************************
             Footer start
         ***********************************-->
-     <?php include('common/footer.php');?>
+    <?php include('common/footer.php');?>
     <!--**********************************
             Footer end
         ***********************************-->

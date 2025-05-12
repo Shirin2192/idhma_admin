@@ -28,7 +28,7 @@ $('#TeamMemberForm').on('submit', function (e) {
                     timer: 2000,
                     confirmButtonColor: '#3085d6'
                 });
-                form.reset();
+               $('#TeamMemberForm')[0].reset();
                 $('#TeamMemberTable').DataTable().ajax.reload(null, false);
             } else if (response.status === 'error') {
                 if (response.errors) {

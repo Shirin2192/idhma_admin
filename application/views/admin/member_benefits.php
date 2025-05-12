@@ -146,12 +146,7 @@
     <!--**********************************
             Footer start
         ***********************************-->
-    <div class="footer">
-        <div class="copyright">
-            <p>Copyright &copy; Designed & Developed by <a href="javascript:void(0);">IHDMA</a>
-                </p>
-        </div>
-    </div>
+     <?php include('common/footer.php');?>
     <!--**********************************
             Footer end
         ***********************************-->

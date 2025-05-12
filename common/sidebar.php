@@ -41,6 +41,7 @@
                             <li><a href="<?= base_url()?>admin/membership_category" aria-expanded="false">Membership Category</a></li>
                             <li><a href="<?= base_url()?>admin/membership_types" aria-expanded="false">Membership Types</a></li>
                             <li><a href="<?= base_url()?>admin/membership_benefits" aria-expanded="false">Membership Benefits</a></li>
+                            <li><a href="<?= base_url()?>admin/announcement" aria-expanded="false">Announcements</a></li>
                         </ul>
                     </li>                  
                  </ul>

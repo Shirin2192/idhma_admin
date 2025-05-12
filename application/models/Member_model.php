@@ -26,4 +26,17 @@ class Member_model extends CI_Model {
         $query = $this->db->get();
         return $query->row_array();
     }
+     public function get_email_recipients() {
+        $this->db->select('email');
+        $this->db->from('tbl_members');
+        $this->db->where('email IS NOT NULL');
+        return $this->db->get()->result_array();
+    }
+
+    public function get_whatsapp_recipients() {
+        $this->db->select('phone');
+        $this->db->from('tbl_members');
+        $this->db->where('phone IS NOT NULL');
+        return $this->db->get()->result_array();
+    }
 }

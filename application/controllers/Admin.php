@@ -613,7 +613,7 @@ class Admin extends CI_Controller {
 				$uploadData = $this->upload->data();
 				$exist = $this->model->selectWhereData(
 					'tbl_team_members',
-					['LOWER(name)' => strtolower($this->input->post('name'))],
+					['name' => $this->input->post('name'),'is_delete' => '1'],
 					'*',
 					true
 				);
@@ -651,103 +651,94 @@ class Admin extends CI_Controller {
 		echo json_encode($response);
 	}
 	public function update_team_member()
-	{
-		$this->load->library('form_validation');
+{
+    $this->load->library('form_validation');
 
-		// Validate form fields
-		$this->form_validation->set_rules('edit_name', 'Name', 'required|trim');
-		$this->form_validation->set_rules('edit_designation', 'Designation', 'required|trim');
-		$this->form_validation->set_rules('edit_facebook_link', 'Facebook Link', 'required|trim');
-		$this->form_validation->set_rules('edit_linkedin_link', 'Linkedin Link', 'required|trim');
-		$this->form_validation->set_rules('edit_youtube_link', 'Youtube Link', 'required|trim');
-		$this->form_validation->set_rules('edit_twitter_link', 'Twitter Link', 'required|trim');
-		$this->form_validation->set_rules('edit_description', 'Description', 'required|trim');
+    // Validate standard form fields (excluding file upload)
+    $this->form_validation->set_rules('edit_name', 'Name', 'required|trim');
+    $this->form_validation->set_rules('edit_designation', 'Designation', 'required|trim');
+    $this->form_validation->set_rules('edit_facebook_link', 'Facebook Link', 'required|trim');
+    $this->form_validation->set_rules('edit_linkedin_link', 'Linkedin Link', 'required|trim');
+    $this->form_validation->set_rules('edit_youtube_link', 'Youtube Link', 'required|trim');
+    $this->form_validation->set_rules('edit_twitter_link', 'Twitter Link', 'required|trim');
+    $this->form_validation->set_rules('edit_description', 'Description', 'required|trim');
 
-		// Check if the photo is uploaded, only mark it as required if a new photo is to be uploaded
-		if (!empty($_FILES['edit_photo']['name'])) {
-			$this->form_validation->set_rules('edit_photo', 'Photo', 'required');
-		}
+    if ($this->form_validation->run() == FALSE) {
+        echo json_encode([
+            'status' => 'error',
+            'errors' => $this->form_validation->error_array()
+        ]);
+        return;
+    }
 
-		// Check validation
-		if ($this->form_validation->run() == FALSE) {
-			echo json_encode([
-				'status' => 'error',
-				'errors' => $this->form_validation->error_array()
-			]);
-			return;
-		} else {
-			// Get the current photo path, so if no new photo is uploaded, we can use the old one
-			$photoPath = $this->input->post('current_photo'); // This should be passed in from JS if no new photo is uploaded
+    $photoPath = $this->input->post('current_photo'); // fallback to current photo
 
-			// Handle file upload if a new photo is uploaded
-			if (!empty($_FILES['edit_photo']['name'])) {
-				$config['upload_path']   = './uploads/team/';
-				$config['allowed_types'] = 'jpg|jpeg|png|gif';
-				$config['max_size']      = 2048;
+    // Check if a new photo was uploaded
+    if (!empty($_FILES['edit_photo']['name'])) {
+        $config['upload_path']   = './uploads/team/';
+        $config['allowed_types'] = 'jpg|jpeg|png|gif';
+        $config['max_size']      = 2048;
+        $config['encrypt_name']  = TRUE;
+        $config['detect_mime']   = TRUE;
 
-				$this->load->library('upload', $config);
+        $this->load->library('upload', $config);
 
-				if (!$this->upload->do_upload('edit_photo')) {
-					echo json_encode([
-						'status' => 'error',
-						'errors' => ['edit_photo' => $this->upload->display_errors()]
-					]);
-					return;
-				} else {
-					// If file upload successful, delete the old photo
-					$uploadData = $this->upload->data();
-					$photoPath = 'uploads/team/' . $uploadData['file_name'];
+        if (!$this->upload->do_upload('edit_photo')) {
+            echo json_encode([
+                'status' => 'error',
+                'errors' => ['edit_photo' => strip_tags($this->upload->display_errors())]
+            ]);
+            return;
+        } else {
+            $uploadData = $this->upload->data();
+            $photoPath = 'uploads/team/' . $uploadData['file_name'];
 
-					// Fetch the old image path to delete it
-					$oldData = $this->model->selectWhereData('tbl_team_members', ['id' => $this->input->post('edit_member_id')]);
-					$oldPhoto = $oldData['photo'] ?? '';
+            // Fetch and delete old photo if exists
+            $oldData = $this->model->selectWhereData('tbl_team_members', ['id' => $this->input->post('edit_member_id')]);
+            $oldPhoto = $oldData['photo'] ?? '';
 
-					// Delete old photo if it exists
-					if (!empty($oldPhoto) && file_exists(FCPATH . $oldPhoto)) {
-						unlink(FCPATH . $oldPhoto);
-					}
-				}
-			}
+            if (!empty($oldPhoto) && file_exists(FCPATH . $oldPhoto)) {
+                unlink(FCPATH . $oldPhoto);
+            }
+        }
+    }
 
-			// Check if a member with the same name already exists (ignoring case)
-			$exist = $this->model->selectWhereData(
-				'tbl_team_members',
-				['LOWER(name)' => strtolower($this->input->post('edit_name')), 'id !=' => $this->input->post('edit_member_id')],
-				'*',
-				true
-			);
+    // Case-insensitive name duplicate check
+    $this->db->where('name', strtolower($this->input->post('edit_name')));
+    $this->db->where('id !=', $this->input->post('edit_member_id'));
+    $exist = $this->db->get('tbl_team_members')->row_array();
 
-			if ($exist) {
-				echo json_encode([
-					'status' => 'error',
-					'errors' => ['edit_name' => 'This team member already exists.']
-				]);
-				return;
-			} else {
-				// Prepare the data to be updated
-				$data = [
-					'name'           => $this->input->post('edit_name'),
-					'designation'    => $this->input->post('edit_designation'),
-					'photo'          => $photoPath, // Store the path of the photo (uploaded or existing)
-					'facebook_link'  => $this->input->post('edit_facebook_link'),
-					'linkedin_link'  => $this->input->post('edit_linkedin_link'),
-					'youtube_link'   => $this->input->post('edit_youtube_link'),
-					'twitter_link'   => $this->input->post('edit_twitter_link'),
-					'description'    => $this->input->post('edit_description'),
-				];
+    if ($exist) {
+        echo json_encode([
+            'status' => 'error',
+            'errors' => ['edit_name' => 'This team member already exists.']
+        ]);
+        return;
+    }
 
-				// Update the team member's data
-				$this->model->updateData('tbl_team_members', $data, ['id' => $this->input->post('edit_member_id')]);
+    // Prepare updated data
+    $data = [
+        'name'           => $this->input->post('edit_name'),
+        'designation'    => $this->input->post('edit_designation'),
+        'photo'          => $photoPath,
+        'facebook_link'  => $this->input->post('edit_facebook_link'),
+        'linkedin_link'  => $this->input->post('edit_linkedin_link'),
+        'youtube_link'   => $this->input->post('edit_youtube_link'),
+        'twitter_link'   => $this->input->post('edit_twitter_link'),
+        'description'    => $this->input->post('edit_description'),
+    ];
 
-				// Return success response with updated photo URL
-				echo json_encode([
-					'status' => 'success',
-					'message' => 'Team member updated successfully!',
-					'edit_photo' => base_url($photoPath) // Include the URL of the updated photo
-				]);
-			}
-		}
-	}
+    // Perform the update
+    $this->model->updateData('tbl_team_members', $data, ['id' => $this->input->post('edit_member_id')]);
+
+    // Send success response
+    echo json_encode([
+        'status' => 'success',
+        'message' => 'Team member updated successfully!',
+        'edit_photo' => base_url($photoPath)
+    ]);
+}
+
 	public function delete_team_member()
 	{
 		$id = $this->input->post('id');
@@ -1296,7 +1287,140 @@ class Admin extends CI_Controller {
 			}
 		}
 	}
-	
+	 public function save_announcement() {
+        $title = $this->input->post('title', TRUE);
+        $message = $this->input->post('message', TRUE);
+        $send_email = $this->input->post('send_email') ? 1 : 0;
+        $send_whatsapp = $this->input->post('send_whatsapp') ? 1 : 0;
+		
+		$this->form_validation->set_rules('title', 'Title', 'required|trim');
+    	$this->form_validation->set_rules('message', 'Message', 'required|trim');
 
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Validation failed.',
+				'errors' => $this->form_validation->error_array()
+			]);
+			return;
+		}
+        $data = [
+            'title' => $title,
+            'message' => $message,
+            'send_email' => $send_email,
+            'send_whatsapp' => $send_whatsapp
+        ];
+        $insert_id = $this->model->insertData('tbl_announcements',$data);
+
+        if ($insert_id) {
+			$this->load->library('email');
+			$this->load->model('Member_model');
+            // 🔹 Send Bulk Email
+            // if ($send_email) {
+            //     $recipients = $this->Member_model->get_email_recipients();
+            //     foreach ($recipients as $recipient) {
+            //         $this->send_email($recipient->email, $title, $message);
+            //         sleep(1); // Optional: avoid spam detection
+            //     }
+            // }
+
+            // // 🔹 Send Bulk WhatsApp
+            // if ($send_whatsapp) {
+            //     $recipients = $this->Member_model->get_whatsapp_recipients();
+            //     foreach ($recipients as $recipient) {
+            //         $this->send_whatsapp_notification($recipient['phone'], $title, $message);
+            //         sleep(1); // Optional: to avoid API rate limits
+            //     }
+            // }
+
+            echo json_encode(['status' => 'success', 'message' => 'Announcement sent successfully.']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to send announcement.']);
+        }
+    }
+
+    private function send_whatsapp_notification($to_number, $title, $message) {
+        $sid = 'YOUR_TWILIO_SID';
+        $token = 'YOUR_TWILIO_AUTH_TOKEN';
+        $twilio_number = 'whatsapp:+14155238886';
+
+        $client = new Client($sid, $token);
+
+        try {
+            $client->messages->create(
+                "whatsapp:$to_number",
+                [
+                    'from' => $twilio_number,
+                    'body' => "📢 *$title*\n\n$message"
+                ]
+            );
+        } catch (Exception $e) {
+            log_message('error', "WhatsApp error for $to_number: " . $e->getMessage());
+        }
+    }
+	public function announcement_data_on_datatable(){
+		$response['data'] = $this->model->selectWhereData('tbl_announcements', array('is_delete' => '1'), '*', false,array('id'=>'desc'));
+		$response['status'] = 'success';
+		echo json_encode($response);
+	}
+	public function announcement_data_on_id(){
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_announcements', array('id' => $id), '*', true);
+		$response['status'] = 'success';
+		echo json_encode($response);
+	}
+	public function update_announcement() {
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('edit_title', 'Title', 'required|trim');
+		$this->form_validation->set_rules('edit_message', 'Message', 'required|trim');
+
+		if ($this->form_validation->run() == FALSE) {
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Validation failed.',
+				'errors' => $this->form_validation->error_array()
+			]);
+			return;
+		}
+		$id = $this->input->post('edit_announcement_id');
+		$title = $this->input->post('edit_title', TRUE);
+		$message = $this->input->post('edit_message', TRUE);
+		$send_email = $this->input->post('edit_send_email') ? 1 : 0;
+		$send_whatsapp = $this->input->post('edit_send_whatsapp') ? 1 : 0;
+
+		$data = [
+			'title' => $title,
+			'message' => $message,
+			'send_email' => $send_email,
+			'send_whatsapp' => $send_whatsapp
+		];
+		$updated = $this->model->updateData('tbl_announcements',$data, ['id' => $id]);
+
+		if ($updated) {
+			$this->load->library('email');
+			$this->load->model('Member_model');
+			// 🔹 Send Bulk Email
+			// if ($send_email) {
+			//     $recipients = $this->Member_model->get_email_recipients();
+			//     foreach ($recipients as $recipient) {
+			//         $this->send_email($recipient['email'], $title, $message);
+			//         sleep(1); // Optional: avoid spam detection
+			//     }
+			// }
+
+			// 🔹 Send Bulk WhatsApp
+			if ($send_whatsapp) {
+			    $recipients = $this->Member_model->get_whatsapp_recipients();
+			    foreach ($recipients as $recipient) {
+			        $this->send_whatsapp_notification($recipient['phone'], $title, $message);
+			        sleep(1); // Optional: to avoid API rate limits
+			    }
+			}
+
+			echo json_encode(['status' => 'success', 'message' => 'Announcement updated successfully.']);
+		} else {
+			echo json_encode(['status' => 'error', 'message' => 'Failed to update announcement.']);
+		}
+	}
 }
 	

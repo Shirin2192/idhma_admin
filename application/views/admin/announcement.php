@@ -72,7 +72,7 @@
                 <div class="col p-md-0">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
-                        <li class="breadcrumb-item active"><a href="javascript:void(0)">Home</a></li>
+                        <li class="breadcrumb-item active"><a href="javascript:void(0)">Announcement</a></li>
                     </ol>
                 </div>
             </div>
@@ -83,7 +83,8 @@
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-body">
-                                <form class="form-valide" action="#" method="post">
+                                <form id="AnnouncementForm">
+                                      <h4 class="card-title">Add Announcement</h4>
                                     <div class="form-validation">
                                         <div class="row">
                                             <div class="col-md-6">
@@ -91,20 +92,14 @@
                                                         class="text-danger">*</span> </label>
                                                 <input type="text" class="form-control" id="title" name="title"
                                                     placeholder="Entre Title">
+                                                    <small class="text-danger" id="title_error"></small>
                                             </div>
                                             <div class="col-md-6">
                                                 <label class="col-form-label" for="message">Message <span
                                                         class="text-danger">*</span> </label>
                                                 <textarea type="text" class="form-control" id="message" name="message"
                                                     placeholder="Entre Message"></textarea>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="col-form-label" for="blogs">Type <span
-                                                        class="text-danger">*</span> </label>
-                                                <select class="form-control" id="type" name="type">
-                                                    <option value="notification">Notification</option>
-                                                    <option value="program">Program</option>
-                                                </select>
+                                                    <small class="text-danger" id="message_error"></small>
                                             </div>
                                             <div class="col-md-6">
                                                 <label class="col-form-label" for="content">Send via <span
@@ -133,37 +128,19 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="card-title">Blog List</h4>
+                                <h4 class="card-title">Announcement List</h4>
                                 <div class="table-responsive">
-                                    <table class="table table-striped table-bordered zero-configuration">
+                                    <table id="AnnouncementTable" class="table table-striped table-bordered zero-configuration">
                                         <thead>
                                             <tr>
                                                 <th>Sr. No</th>
                                                 <th>Title</th>
-                                                <th>Slug</th>
-                                                <th>Blogs</th>
-                                                <th>Content</th>
+                                                <th>Message</th>                                            
                                                 <th>Action</th>
 
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>Tiger Nixon</td>
-                                                <td>System Architect</td>
-                                                <td>Edinburgh</td>
-                                                <td>61</td>
-
-                                                <td>
-
-                                                    <a href="javascript:void(0)" class="btn btn-primary">Edit</a>
-                                                    <a href="javascript:void(0)" class="btn btn-danger">Delete</a>
-                                                </td>
-                                            </tr>
-
-                                        </tbody>
-
+                                        
                                     </table>
                                 </div>
                             </div>
@@ -174,7 +151,109 @@
         </div>
         <!-- #/ container -->
         <!-- Modal Popup -->
+        <div class="modal fade" id="viewAnnoucementModal" tabindex="-1" role="dialog" aria-labelledby="viewAnnoucementModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="viewAnnoucementModalLabel">View Announcement</h5>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Title Section -->
+                        <div class="form-group">
+                            <label for="view_title" class="font-weight-bold">Title</label>
+                            <p id="view_title" class="lead text-dark">Loading...</p>
+                        </div>
 
+                        <!-- Featured Image Section -->
+                        <div class="form-group">
+                            <label for="view_message" class="font-weight-bold">Message</label>
+                            
+                                <p id="view_message" class="lead text-dark">Loading...</p>
+                            
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="editAnnouncementModal" tabindex="-1" role="dialog" aria-labelledby="editAnnouncementModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editAnnouncementModalLabel">Edit Announcement</h5>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editAnnouncementForm">
+                            <input type="hidden" id="edit_announcement_id" name="edit_announcement_id">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <label class="col-form-label" for="edit_title">Title <span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="edit_title" name="edit_title"
+                                        placeholder="Enter Title">
+                                    <small class="text-danger" id="edit_title_error"></small>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="edit_message" class="font-weight-bold">Message</label>
+                                    <textarea  class="form-control" id="edit_message"
+                                        name="edit_message"></textarea>
+                                    <small class="text-danger" id="edit_message_error"></small>
+                                </div>     
+                                 <div class="col-md-6">
+                                    <label class="col-form-label" for="content">Send via <span
+                                            class="text-danger">*</span> </label>
+                                    <div><input type="checkbox" name="edit_send_email" value="1"> Email<br>
+                                        <input type="checkbox" name="edit_send_whatsapp" value="1">
+                                        WhatsApp<br><br>
+                                    </div>
+                                     <small class="text-danger" id="edit_send_via_error"></small>
+                                </div>                         
+                            </div>
+                            <!-- Submit Button -->
+                            <!-- Modal Footer -->
+                            <div class="modal-footer">
+                                <!-- For Bootstrap 4 -->
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div class="modal fade" id="deleteBannerModal" tabindex="-1" role="dialog" aria-labelledby="deleteBlogModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteBlogModalLabel">Confirm Soft Delete</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to soft delete this Banner? This action cannot be undone.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Confirm Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <!--**********************************
             Content body end
@@ -202,6 +281,8 @@
         Scripts
     ***********************************-->
     <?php include('common/js_files.php');?>
+    <script src="<?= base_url()?>assets/view_js/announcement.js"></script>
+
 
 </body>
 

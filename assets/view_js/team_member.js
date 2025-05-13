@@ -1,3 +1,51 @@
+let editDescriptionEditor;
+
+ClassicEditor
+    .create(document.querySelector('#description'), {
+        toolbar: [
+            'heading', '|',
+            'bold', 'italic', 'underline', '|',
+            'fontColor', 'fontBackgroundColor', 'fontSize', '|',
+            'link', 'bulletedList', 'numberedList', '|',
+            'alignment', 'blockQuote', '|',
+            'undo', 'redo'
+        ],
+       
+        fontSize: {
+            options: [ 'tiny', 'small', 'default', 'big', 'huge' ]
+        },
+        alignment: {
+            options: [ 'left', 'center', 'right', 'justify' ]
+        }
+    })
+    .catch(error => {
+        console.error(error);
+    });
+    ClassicEditor
+    .create(document.querySelector('#edit_description'), {
+        toolbar: [
+            'heading', '|',
+            'bold', 'italic', 'underline', '|',
+            'fontColor', 'fontBackgroundColor', 'fontSize', '|',
+            'link', 'bulletedList', 'numberedList', '|',
+            'alignment', 'blockQuote', '|',
+            'undo', 'redo'
+        ],
+       
+        fontSize: {
+            options: [ 'tiny', 'small', 'default', 'big', 'huge' ]
+        },
+        alignment: {
+            options: [ 'left', 'center', 'right', 'justify' ]
+        }
+    })
+   .then(editor => {
+        editDescriptionEditor = editor;
+    })
+    .catch(error => {
+        console.error(error);
+    });
+
 $('#TeamMemberForm').on('submit', function (e) {
     e.preventDefault();
 
@@ -163,7 +211,11 @@ $(document).ready(function () {
             }
         });
     });
-    
+    // Initialize CKEditor
+    if (CKEDITOR.instances['edit_description']) {
+        CKEDITOR.instances['edit_description'].destroy(true);
+    }
+    CKEDITOR.replace('edit_description');
     
 
    // Edit button handler
@@ -183,7 +235,11 @@ $(document).ready(function () {
                 $('#edit_member_id').val(data.id); // Hidden ID input
                 $('#edit_name').val(data.name);
                 $('#edit_designation').val(data.designation);
-                $('#edit_description').val(data.description);
+                // Wait for CKEditor to be ready, then set data
+                 if (editDescriptionEditor) {
+                    editDescriptionEditor.setData(data.description);
+                }
+
                 $('#edit_facebook_link').val(data.facebook_link);
                 $('#edit_linkedin_link').val(data.linkedin_link);
                 $('#edit_youtube_link').val(data.youtube_link);

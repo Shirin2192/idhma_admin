@@ -1421,5 +1421,15 @@ class Admin extends CI_Controller {
 			echo json_encode(['status' => 'error', 'message' => 'Failed to update announcement.']);
 		}
 	}
+	public function renderHBOTNotices()
+	{
+		$admin_session = $this->session->userdata('admin_session');
+		if (empty($admin_session)) {
+			redirect('common');
+		}else{
+			$this->load->view('admin/hbot_notices');
+		}
+	}
+
 }
 	

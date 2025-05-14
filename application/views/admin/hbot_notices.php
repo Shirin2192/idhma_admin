@@ -83,7 +83,7 @@
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-body">
-                                <form id="JournalPdfForm">
+                                <form id="HBOTForm">
                                     <h4 class="card-title">HOBT Notification</h4>
                                     <div class="form-validation">
                                         <div class="row">
@@ -96,10 +96,30 @@
 
                                             </div>
                                             <div class="col-lg-6">
-                                                <label class="col-form-label" for="journal_pdf">Description <span
+                                                <label class="col-form-label" for="description">description <span
                                                         class="text-danger">*</span></label>
-                                                <input type="file" class="form-control" id="journal_pdf" name="journal_pdf">
-                                                <small class="text-danger" id="journal_pdf_error"></small>
+                                                <textarea class="form-control" id="description" name="description"
+                                                    placeholder="Enter description"></textarea>
+                                                <small class="text-danger" id="description_error"></small>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label class="col-form-label" for="link">Video Link <span
+                                                        class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="link" name="link">
+                                                <small class="text-danger" id="link_error"></small>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label class="col-form-label" for="files">Upload File <span
+                                                        class="text-danger">*</span></label>
+                                                <input type="file" class="form-control" id="files" name="files">
+                                                <small class="text-danger" id="files_error"></small>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <label class="col-form-label" for="files">Button Label <span
+                                                        class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="button_name"
+                                                    name="button_name">
+                                                <small class="text-danger" id="button_name_error"></small>
                                             </div>
                                         </div>
                                     </div>
@@ -120,15 +140,16 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="card-title">Journal PDFs List</h4>
+                                <h4 class="card-title">HBOT Notification List</h4>
                                 <div class="table-responsive">
-                                    <table id="JournalPDFsTable"
-                                        class="table table-striped table-bordered zero-configuration">
+                                    <table id="HBOTTable" class="table table-striped table-bordered zero-configuration">
                                         <thead>
                                             <tr>
                                                 <th>Sr. No</th>
                                                 <th>Title</th>
-                                                <th>Journal PDFs</th>
+                                                <th>Description</th>
+                                                <th>Video Link</th>
+                                                <th>File</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -143,12 +164,12 @@
         <!-- #/ container -->
         <!-- Modal Popup -->
         <!-- View Blog Details Modal -->
-        <div class="modal fade" id="viewJournalPdfsModal" tabindex="-1" role="dialog" aria-labelledby="viewJournalPdfsLabel"
-            aria-hidden="true">
+        <div class="modal fade" id="viewJournalPdfsModal" tabindex="-1" role="dialog"
+            aria-labelledby="viewJournalPdfsLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="viewJournalPdfsLabel">View Journal PDFs</h5>
+                        <h5 class="modal-title" id="viewJournalPdfsLabel">View HBOT Notification</h5>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -157,15 +178,26 @@
                         <!-- Title Section -->
                         <div class="form-group">
                             <label for="view_title" class="font-weight-bold">Title</label>
-                            <p id="view_title" class="lead text-dark">Loading...</p>
+                            <h5 id="view_title"></h5>
                         </div>
-
                         <!-- Featured Image Section -->
                         <div class="form-group">
-                            <label for="view_pdfs" class="font-weight-bold">Journal PDFs</label>
-                            <div class="text-center">                                
-                                <a href="#" id="view_pdfs_link" class="btn btn-primary mt-2" target="_blank">View PDF</a>
+                            <label for="view_description" class="font-weight-bold">Description</label>
+                            <p id="view_description"></p>
+                        </div>
+                        <div class="form-group">
+                            <label for="view_video_link" class="font-weight-bold">Watch Video</label>
+                            <div><a id="view_video_link" href="#" target="_blank" style="display:none;">Watch
+                                    Video</a><br></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="view_pdfs_link" class="font-weight-bold">PDF</label>
+                            <div><a id="view_pdfs_link" href="#" target="_blank" style="display:none;">View PDF</a>
                             </div>
+                        </div>
+                         <div class="form-group">
+                            <label for="view_button" class="font-weight-bold">Button Label</label>
+                            <p id="view_button"></p>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -174,59 +206,92 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="editJournalPdfsModal" tabindex="-1" role="dialog" aria-labelledby="editJournalPdfsModalLabel"
-            aria-hidden="true">
+        <div class="modal fade" id="editHBOTModal" tabindex="-1" role="dialog"
+            aria-labelledby="editHBOTModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editJournalPdfsModalLabel">Edit Journal PDFs</h5>
+                        <h5 class="modal-title" id="editHBOTModalLabel">Edit HBOT Notification</h5>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form id="editpdfsForm" enctype="multipart/form-data">
-                        <input type="hidden" id="edit_pdf_id" name="edit_pdf_id">
-                        <input type="hidden" id="edit_current_pdf" name="edit_current_pdf">
+                        <form id="editHBOTForm" enctype="multipart/form-data">
+                            <!-- Hidden fields -->
+                            <input type="hidden" id="edit_hbot_id" name="edit_hbot_id">
+                            <input type="hidden" id="edit_current_file" name="edit_current_file">
 
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <label class="col-form-label" for="edit_title">Title <span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="edit_title" name="edit_title"
-                                        placeholder="Enter Title">
-                                    <small class="text-danger" id="edit_title_error"></small>
+                            <div class="form-validation">
+                                <div class="row">
+                                    <!-- Title -->
+                                    <div class="col-lg-6">
+                                        <label for="edit_title" class="col-form-label">Title <span
+                                                class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="edit_title" name="edit_title"
+                                            placeholder="Enter Title">
+                                        <small class="text-danger" id="edit_title_error"></small>
+                                    </div>
 
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="edit_pdf" class="font-weight-bold">Journal PDFs</label>
-                                    <input type="file" class="form-control" id="edit_pdf"
-                                        name="edit_pdf">
-                                    <small class="text-danger" id="edit_pdf_error"></small>
-                                </div>
-                                <div class="form-group text-center">`
-                                    <label for="current_pdfs" class="font-weight-bold">Current Journal PDFs</label><br>
-                                    <a id="current_pdf_link" href="#" target="_blank" class="btn btn-sm btn-secondary">View Current PDF</a>
+                                    <!-- Description -->
+                                    <div class="col-lg-6">
+                                        <label for="edit_description" class="col-form-label">Description <span
+                                                class="text-danger">*</span></label>
+                                        <textarea class="form-control" id="edit_description" name="edit_description"
+                                            placeholder="Enter Description"></textarea>
+                                        <small class="text-danger" id="edit_description_error"></small>
+                                    </div>
 
+                                    <!-- Video Link -->
+                                    <div class="col-lg-6">
+                                        <label for="edit_link" class="col-form-label">Video Link <span
+                                                class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="edit_link" name="edit_link"
+                                            placeholder="Enter Video Link">
+                                        <small class="text-danger" id="edit_link_error"></small>
+                                    </div>
+
+                                    <!-- Upload File -->
+                                    <div class="col-lg-6">
+                                        <label for="edit_file" class="col-form-label">Upload File <span
+                                                class="text-danger">*</span></label>
+                                        <input type="file" class="form-control" id="edit_file" name="edit_file">
+                                        <small class="text-danger" id="edit_file_error"></small>
+                                    </div>
+
+                                    <!-- Current File Preview -->
+                                    <div class="col-12 text-center mt-3">
+                                        <label class="font-weight-bold">Current Uploaded File</label><br>
+                                        <a id="edit_file_link" href="#" target="_blank"
+                                            class="btn btn-sm btn-secondary">View Current File</a>
+                                    </div>
+
+                                    <!-- Button Label -->
+                                    <div class="col-lg-6 mt-3">
+                                        <label for="edit_button_name" class="col-form-label">Button Label <span
+                                                class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="edit_button_name"
+                                            name="edit_button_name" placeholder="Enter Button Label">
+                                        <small class="text-danger" id="edit_button_name_error"></small>
+                                    </div>
                                 </div>
                             </div>
-                            <!-- Submit Button -->
-                            <!-- Modal Footer -->
-                            <div class="modal-footer">
-                                <!-- For Bootstrap 4 -->
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 
-                                <button type="submit" class="btn btn-primary">Update</button>
+                            <!-- Form Submit -->
+                            <div class="modal-footer mt-3">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-success">Update</button>
                             </div>
                         </form>
+
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Delete Confirmation Modal -->
-        <div class="modal fade" id="deleteJournalPdfsModal" tabindex="-1" role="dialog" aria-labelledby="deleteBlogModalLabel"
-            aria-hidden="true">
+        <div class="modal fade" id="deleteJournalPdfsModal" tabindex="-1" role="dialog"
+            aria-labelledby="deleteBlogModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -255,7 +320,7 @@
     <!--**********************************
             Footer start
         ***********************************-->
-     <?php include('common/footer.php');?>
+    <?php include('common/footer.php');?>
     <!--**********************************
             Footer end
         ***********************************-->
@@ -268,7 +333,7 @@
         Scripts
     ***********************************-->
     <?php include('common/js_files.php');?>
-    <script src="<?= base_url()?>assets/view_js/journals_pdf.js"></script>
+    <script src="<?= base_url()?>assets/view_js/hbot_notification.js"></script>
 </body>
 
 </html>

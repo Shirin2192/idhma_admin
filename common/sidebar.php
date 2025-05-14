@@ -34,6 +34,7 @@
                         </a>
                         <ul aria-expanded="false">
                             <li><a href="<?= base_url()?>admin/banners" aria-expanded="false">Banners</a></li>
+                            <li><a href="<?= base_url()?>admin/renderHBOTNotices" aria-expanded="false">HBOT Notification</a></li>
                             <li><a href="<?= base_url()?>admin/about_us" aria-expanded="false">About Us</a></li>
                             <li><a href="<?= base_url()?>admin/objectives" aria-expanded="false">About Us Objectives</a></li>
                             <li><a href="<?= base_url()?>admin/blogs" aria-expanded="false">Blogs</a></li>

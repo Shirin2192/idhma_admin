@@ -1430,6 +1430,140 @@ class Admin extends CI_Controller {
 			$this->load->view('admin/hbot_notices');
 		}
 	}
+	public function save_HBOT_Notices()
+	{
+		$this->load->library('form_validation');
+
+		$this->form_validation->set_rules('title', 'Title', 'required|is_unique[tbl_hbot_notifications.title]');
+		$this->form_validation->set_rules('button_name', 'Button Label', 'required');
+		// $this->form_validation->set_rules('link', 'Video Link', 'required');
+
+		if ($this->form_validation->run() == FALSE) {
+				echo json_encode([
+					'status' => 'error',
+					'message' => 'Validation failed.',
+					'errors' => $this->form_validation->error_array()
+				]);
+				return;
+			}
+
+		// Handle file upload
+		$file_path = '';
+		if (!empty($_FILES['files']['name'])) {
+			$upload_dir = './uploads/hbot/';
+			
+			// Create directory if not exists
+			if (!is_dir($upload_dir)) {
+				mkdir($upload_dir, 0777, true); // recursive = true
+			}
+
+			$config['upload_path'] = $upload_dir;
+			$config['allowed_types'] = 'pdf|doc|docx|jpg|jpeg|png|mp4';
+			$config['file_name'] = time() . '_' . $_FILES['files']['name'];
+
+			$this->load->library('upload', $config);
+			if ($this->upload->do_upload('files')) {
+				$file_path = $upload_dir . $this->upload->data('file_name');
+			} else {
+				echo json_encode([
+					'status' => 'error',
+					'errors' => ['files' => $this->upload->display_errors()]
+				]);
+				return;
+			}
+		} else {
+			echo json_encode(['status' => 'error', 'errors' => ['files' => 'File is required.']]);
+			return;
+		}
+		// Insert into DB
+		$data = [
+			'title' => $this->input->post('title'),
+			'description' => $this->input->post('description'),
+			'video_link' => $this->input->post('link'),
+			'file_path' => $file_path,
+			'button' => $this->input->post('button_name'),
+		];
+		$this->model->insertData('tbl_hbot_notifications', $data);
+
+		echo json_encode(['status' => 'success']);
+	}
+	public function HBOT_Notices_data_on_datatable(){
+		$response['data'] = $this->model->selectWhereData('tbl_hbot_notifications', array('is_delete' => '1'), '*', false,array('id'=>'desc'));
+		$response['status'] = 'success';
+		echo json_encode($response);
+	}
+	public function HBOT_Notices_data_on_id(){
+		$id = $this->input->post('id');
+		$response['data'] = $this->model->selectWhereData('tbl_hbot_notifications', array('id' => $id), '*', true);
+		$response['status'] = 'success';
+		echo json_encode($response);
+	}
+	public function update_HBOT_Notices_data(){
+		$this->load->library('form_validation');
+
+		$this->form_validation->set_rules('edit_title', 'Title', 'required');
+        $this->form_validation->set_rules('edit_button_name', 'Button Label', 'required');
+
+		// $this->form_validation->set_rules('link', 'Video Link', 'required');
+
+		if ($this->form_validation->run() == FALSE) {
+				echo json_encode([
+					'status' => 'error',
+					'message' => 'Validation failed.',
+					'errors' => $this->form_validation->error_array()
+				]);
+				return;
+		}
+			$id = $this->input->post('edit_hbot_id');
+            $title = $this->input->post('edit_title');
+            $description = $this->input->post('edit_description');
+            $video_link = $this->input->post('edit_link');
+            $button_name = $this->input->post('edit_button_name');
+            $current_file = $this->input->post('edit_current_file'); // current file path in DB
+
+			$new_file = null;
+            if ($_FILES['edit_file']['name']) {
+                // File upload configuration
+                $config['upload_path'] = './uploads/hbot/';
+                $config['allowed_types'] = 'pdf|doc|docx|jpg|png'; // Modify as per allowed file types
+                $config['max_size'] = 5000; // 5MB limit
+
+                $this->load->library('upload', $config);
+
+                if ($this->upload->do_upload('edit_file')) {
+                    // Get new file path
+                    $upload_data = $this->upload->data();
+                    $new_file = './uploads/hbot/' . $upload_data['file_name'];
+                } else {
+                    // Handle file upload error
+                    $this->session->set_flashdata('error', $this->upload->display_errors());
+                    echo json_encode(['status' => 'error', 'message' => $this->upload->display_errors()]);
+                    return;
+                }
+            } else {
+                // No new file, keep the existing one
+                $new_file = $current_file;
+            }
+		// Insert into DB
+			  $update_data = [
+                'title' => $title,
+                'description' => $description,
+                'video_link' => $video_link,
+                'button' => $button_name,
+                'file_path' => $new_file // Update file path
+            ];
+
+			$update_result = $this->model->updateData('tbl_hbot_notifications', $update_data,array('id'=>$id));
+			if ($update_result) {
+                echo json_encode(['status' => 'success', 'message' => 'HBOT Notification updated successfully.']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Failed to update HBOT Notification.']);
+            }
+	}
+		
+
+
+
 
 }
 	

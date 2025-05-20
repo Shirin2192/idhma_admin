@@ -52,8 +52,13 @@ $('#memberDataTable').on('click', '.view-btn', function () {
                 const memberData = response.data;
                 $('#view_name').text(memberData.name); 
                 $('#view_email').text(memberData.email); 
-                $('#view_contact_no').text(memberData.mobile); 
-                $('#view_membership_type').text(memberData.membership_type); 
+                $('#view_contact_no').text(memberData.mobile); 6
+                $('#view_membership_type').text(memberData.membership_type);
+                $('#view_address').text(memberData.address1); 
+                $('#view_country').text(memberData.country_name);  
+                $('#view_state').text(memberData.state_name);  
+                $('#view_city').text(memberData.city);  
+                $('#view_pincode').text(memberData.pincode);  
                 // Show the modal with the blog details
                 $('#viewMemberModal').modal('show');
             } else {
@@ -91,8 +96,7 @@ $.ajax({
             $('#edit_name').text(memberData.name); 
             $('#edit_email').text(memberData.email); 
             $('#edit_contact_no').text(memberData.mobile); 
-            $('#edit_membership_type').text(memberData.membership_type); 
-
+            $('#edit_membership_type').text(memberData.membership_type);
             // Show the modal with the blog details
             $('#editMemberModal').modal('show');
         } else {

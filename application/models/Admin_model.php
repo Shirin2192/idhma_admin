@@ -27,5 +27,16 @@ class Admin_model extends CI_Model {
         $result = $query->row_array();
         return $result;
     }
+
+    public function export_member_data_on_id($id){
+        $this->db->select('tbl_users.*, countries.name as country_name, states.name as state_name');
+        $this->db->from('tbl_users');
+        $this->db->join('countries','tbl_users.country=countries.id','left');
+        $this->db->join('states','tbl_users.state=states.id','left');
+        $this->db->where("tbl_users.id",$id);
+        $query = $this->db->get();
+        $result = $query->row_array();
+        return $result;
+    }
 }
 ?>

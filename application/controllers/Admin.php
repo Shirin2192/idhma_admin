@@ -233,7 +233,8 @@ class Admin extends CI_Controller {
 	}
 	public function export_member_data_on_id(){
 		$id = $this->input->post('id');
-		$response['data'] = $this->model->selectWhereData('tbl_users', array('id' => $id), '*', true);
+		$this->load->model("Admin_model");
+		$response['data'] = $this->Admin_model->export_member_data_on_id($id);
 		$response['status'] = 'success';
 		echo json_encode($response);
 	}

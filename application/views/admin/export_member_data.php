@@ -94,26 +94,8 @@
                                                 <th>Contact No</th>
                                                 <th>Membership Type</th>
                                                 <th>Action</th>
-
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>Tiger Nixon</td>
-                                                <td>System Architect</td>
-                                                <td>Edinburgh</td>
-                                                <td>61</td>
-
-                                                <td>
-
-                                                    <a href="javascript:void(0)" class="btn btn-primary">Edit</a>
-                                                    <a href="javascript:void(0)" class="btn btn-danger">Delete</a>
-                                                </td>
-                                            </tr>
-
-                                        </tbody>
-
                                     </table>
                                 </div>
                             </div>
@@ -161,6 +143,27 @@
                                 <label for="view_membership_type" class="font-weight-bold">Membership Type</label>
                                 <p id="view_membership_type" class="text-justify">Loading...</p>
                             </div>
+                            <div class="form-group col-md-6">
+                                <label for="view_address" class="font-weight-bold">Address</label>
+                                <p id="view_address" class="text-justify">Loading...</p>
+                            </div>
+                            
+                            <div class="form-group col-md-6">
+                                <label for="view_country" class="font-weight-bold">Country</label>
+                                <p id="view_country" class="text-justify">Loading...</p>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="view_state" class="font-weight-bold">State</label>
+                                <p id="view_state" class="text-justify">Loading...</p>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="view_city" class="font-weight-bold">City</label>
+                                <p id="view_city" class="text-justify">Loading...</p>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="view_pincode" class="font-weight-bold">Pincode</label>
+                                <p id="view_pincode" class="text-justify">Loading...</p>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -203,7 +206,7 @@
                                 </div>
 
 
-                                <div class="form-group">
+                                <div class="form-group col-md-6">
                                     <!-- Content (full width) -->
                                     <label for="edit_contact_no" class="font-weight-bold">Contact No</label>
                                     <textarea class="form-control" id="edit_contact_no" name="edit_contact_no" rows="5"
@@ -214,13 +217,13 @@
                             </div>
                             <!-- Status -->
                             <div class="form-group col-md-6">
-                                <label for="edit_status" class="font-weight-bold">Status</label>
-                                <select class="form-control" id="edit_status" name="edit_status">
+                                <label for="edit_membership_type" class="font-weight-bold">Status</label>
+                                <select class="form-control" id="edit_membership_type" name="edit_membership_type">
                                     <option value="draft">Draft</option>
                                     <option value="published">Published</option>
                                     <option value="archived">Archived</option>
                                 </select>
-                                <small class="text-danger" id="edit_status_error"></small>
+                                <small class="text-danger" id="edit_membership_type_error"></small>
                             </div>
 
                             <!-- Submit Button -->
